@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbitMQ.Contracts"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbitMQ.RandomNumberService", "LearningRabbitMQ.RandomNumberService\LearningRabbitMQ.RandomNumberService.csproj", "{9971765B-36E1-4086-B790-BD7885CC9599}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbutMQ.RandomNumberConsumer", "LearningRabbutMQ.RandomNumberConsumer\LearningRabbutMQ.RandomNumberConsumer.csproj", "{3C5E619D-E80E-407B-88BC-2C647F463EE0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

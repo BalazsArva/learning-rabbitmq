@@ -18,7 +18,7 @@ namespace LearningRabbitMQ.RandomNumberService
         private readonly IModel channel;
         private readonly Random random = new();
 
-        private AsyncEventingBasicConsumer consumer;
+        private EventingBasicConsumer consumer;
 
         public Worker(
             IConnection connection,
@@ -34,7 +34,7 @@ namespace LearningRabbitMQ.RandomNumberService
         {
             channel.QueueDeclare(Addresses.RandomNumberServiceInboundQueueName, true, false, false, null);
 
-            consumer = new AsyncEventingBasicConsumer(channel);
+            consumer = new EventingBasicConsumer(channel);
 
             consumer.Received += Consumer_Received;
 
@@ -56,20 +56,20 @@ namespace LearningRabbitMQ.RandomNumberService
             return Task.CompletedTask;
         }
 
-        private Task Consumer_Received(object sender, BasicDeliverEventArgs args)
+        private void Consumer_Received(object sender, BasicDeliverEventArgs args)
         {
             var props = args.BasicProperties;
 
             if (props is null)
             {
                 logger.LogWarning("Received a message with empty basic properties, reply to is missing.");
-                return Task.CompletedTask;
+                return;
             }
 
             if (!props.IsReplyToPresent() || string.IsNullOrWhiteSpace(props.ReplyTo))
             {
                 logger.LogWarning("Received a message with empty reply to header value.");
-                return Task.CompletedTask;
+                return;
             }
 
             var replyTo = props.ReplyTo;
@@ -87,7 +87,9 @@ namespace LearningRabbitMQ.RandomNumberService
 
             channel.BasicPublish(replyTo, string.Empty, channel.CreateBasicProperties(), responseJsonBytes);
 
-            return Task.CompletedTask;
+            logger.LogInformation("Successfully responded to request with result {Number}.", val);
+
+            return;
         }
     }
 }
