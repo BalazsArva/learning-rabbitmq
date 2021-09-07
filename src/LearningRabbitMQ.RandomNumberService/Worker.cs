@@ -13,8 +13,6 @@ namespace LearningRabbitMQ.RandomNumberService
 {
     public class Worker : IHostedService
     {
-        private const string QueueName = "learning-rabbitmq.random-number-service";
-
         private readonly IConnection connection;
         private readonly ILogger logger;
         private readonly IModel channel;
@@ -34,14 +32,14 @@ namespace LearningRabbitMQ.RandomNumberService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            channel.QueueDeclare(QueueName, true, false, false, null);
+            channel.QueueDeclare(Addresses.RandomNumberServiceInboundQueueName, true, false, false, null);
 
             consumer = new AsyncEventingBasicConsumer(channel);
 
             consumer.Received += Consumer_Received;
 
             // TODO: Later, drop auto ack in favor of explicit ack
-            channel.BasicConsume(QueueName, true, consumer);
+            channel.BasicConsume(Addresses.RandomNumberServiceInboundQueueName, true, consumer);
 
             return Task.CompletedTask;
         }
