@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31624.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbitMQ.Contracts", "LearningRabbitMQ.Contracts\LearningRabbitMQ.Contracts.csproj", "{89C68E16-2D33-4860-962C-C84C0E9E4201}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningRabbitMQ.Contracts", "LearningRabbitMQ.Contracts\LearningRabbitMQ.Contracts.csproj", "{89C68E16-2D33-4860-962C-C84C0E9E4201}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbitMQ.RandomNumberService", "LearningRabbitMQ.RandomNumberService\LearningRabbitMQ.RandomNumberService.csproj", "{9971765B-36E1-4086-B790-BD7885CC9599}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningRabbitMQ.RandomNumberService", "LearningRabbitMQ.RandomNumberService\LearningRabbitMQ.RandomNumberService.csproj", "{9971765B-36E1-4086-B790-BD7885CC9599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LearningRabbutMQ.RandomNumberConsumer", "LearningRabbutMQ.RandomNumberConsumer\LearningRabbutMQ.RandomNumberConsumer.csproj", "{3C5E619D-E80E-407B-88BC-2C647F463EE0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LearningRabbitMQ.RandomNumberConsumer", "LearningRabbitMQ.RandomNumberConsumer\LearningRabbitMQ.RandomNumberConsumer.csproj", "{0BE096AB-5920-40CF-937B-B61E465B4F59}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9971765B-36E1-4086-B790-BD7885CC9599}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3C5E619D-E80E-407B-88BC-2C647F463EE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BE096AB-5920-40CF-937B-B61E465B4F59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BE096AB-5920-40CF-937B-B61E465B4F59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BE096AB-5920-40CF-937B-B61E465B4F59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BE096AB-5920-40CF-937B-B61E465B4F59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

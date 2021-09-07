@@ -1,8 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>dotnet-LearningRabbutMQ.RandomNumberConsumer-393B4FED-A1AC-46D2-938E-CED75D57BD72</UserSecretsId>
+    <UserSecretsId>dotnet-LearningRabbitMQ.RandomNumberConsumer-393B4FED-A1AC-46D2-938E-CED75D57BD72</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>

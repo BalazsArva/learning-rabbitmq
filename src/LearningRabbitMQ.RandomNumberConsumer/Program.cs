@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using RabbitMQ.Client;
 
-namespace LearningRabbutMQ.RandomNumberConsumer
+namespace LearningRabbitMQ.RandomNumberConsumer
 {
     public class Program
     {

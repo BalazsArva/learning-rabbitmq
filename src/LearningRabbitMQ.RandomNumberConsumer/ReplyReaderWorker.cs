@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 
-namespace LearningRabbutMQ.RandomNumberConsumer
+namespace LearningRabbitMQ.RandomNumberConsumer
 {
     public class ReplyReaderWorker : IHostedService
     {

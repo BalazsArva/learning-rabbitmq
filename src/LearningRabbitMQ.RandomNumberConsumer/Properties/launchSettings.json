@@ -1,6 +1,6 @@
 ﻿{
   "profiles": {
-    "LearningRabbutMQ.RandomNumberConsumer": {
+    "LearningRabbitMQ.RandomNumberConsumer": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "environmentVariables": {

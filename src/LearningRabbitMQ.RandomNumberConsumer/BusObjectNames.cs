@@ -1,4 +1,4 @@
-﻿namespace LearningRabbutMQ.RandomNumberConsumer
+﻿namespace LearningRabbitMQ.RandomNumberConsumer
 {
     public static class BusObjectNames
     {

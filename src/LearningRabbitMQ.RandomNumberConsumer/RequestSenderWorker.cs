@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 
-namespace LearningRabbutMQ.RandomNumberConsumer
+namespace LearningRabbitMQ.RandomNumberConsumer
 {
     public class RequestSenderWorker : BackgroundService
     {
