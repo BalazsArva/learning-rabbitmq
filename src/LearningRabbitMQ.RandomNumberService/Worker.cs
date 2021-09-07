@@ -41,6 +41,8 @@ namespace LearningRabbitMQ.RandomNumberService
             // TODO: Later, drop auto ack in favor of explicit ack
             channel.BasicConsume(Addresses.RandomNumberServiceInboundQueueName, true, consumer);
 
+            logger.LogInformation("Listener started.");
+
             return Task.CompletedTask;
         }
 
@@ -48,6 +50,8 @@ namespace LearningRabbitMQ.RandomNumberService
         {
             channel.Close();
             connection.Close();
+
+            logger.LogInformation("Listener stopped.");
 
             return Task.CompletedTask;
         }
