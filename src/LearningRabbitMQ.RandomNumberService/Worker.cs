@@ -35,11 +35,9 @@ namespace LearningRabbitMQ.RandomNumberService
             channel.QueueDeclare(Addresses.RandomNumberServiceInboundQueueName, true, false, false, null);
 
             consumer = new EventingBasicConsumer(channel);
-
             consumer.Received += Consumer_Received;
 
-            // TODO: Later, drop auto ack in favor of explicit ack
-            channel.BasicConsume(Addresses.RandomNumberServiceInboundQueueName, true, consumer);
+            channel.BasicConsume(Addresses.RandomNumberServiceInboundQueueName, false, consumer);
 
             logger.LogInformation("Listener started.");
 
@@ -82,8 +80,9 @@ namespace LearningRabbitMQ.RandomNumberService
             var responseJsonBytes = Encoding.UTF8.GetBytes(responseJson);
 
             channel.BasicPublish(props.ReplyTo, string.Empty, channel.CreateBasicProperties(), responseJsonBytes);
+            channel.BasicAck(args.DeliveryTag, false);
 
-            logger.LogInformation("Successfully responded to request with result {Number}.", response.RandomNumber);
+            logger.LogInformation("Successfully responded to request with delivery tag {DeliveryTag} with result {Number}.", args.DeliveryTag, response.RandomNumber);
         }
     }
 }

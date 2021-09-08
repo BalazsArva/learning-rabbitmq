@@ -36,11 +36,9 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             channel.QueueBind(BusObjectNames.IncomingReplyQueueName, BusObjectNames.IncomingReplyExchangeName, string.Empty, null);
 
             consumer = new EventingBasicConsumer(channel);
-
             consumer.Received += Consumer_Received;
 
-            // TODO: Later, drop auto ack in favor of explicit ack
-            channel.BasicConsume(BusObjectNames.IncomingReplyQueueName, true, consumer);
+            channel.BasicConsume(BusObjectNames.IncomingReplyQueueName, false, consumer);
 
             logger.LogInformation("Reply listener started.");
 
@@ -63,6 +61,8 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             var response = JsonConvert.DeserializeObject<GenerateRandomNumberReply>(responseJson);
 
             logger.LogInformation("Received random number response: {Number}.", response.RandomNumber);
+
+            channel.BasicAck(args.DeliveryTag, false);
         }
     }
 }
