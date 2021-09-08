@@ -17,7 +17,7 @@ namespace LearningRabbitMQ.RandomNumberConsumer
         private readonly ILogger logger;
         private readonly IModel channel;
 
-        private EventingBasicConsumer consumer;
+        private AsyncEventingBasicConsumer consumer;
 
         public ReplyReaderWorker(
             IConnection connection,
@@ -35,7 +35,7 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             channel.QueueDeclare(BusObjectNames.IncomingReplyQueueName, true, false, false, null);
             channel.QueueBind(BusObjectNames.IncomingReplyQueueName, BusObjectNames.IncomingReplyExchangeName, string.Empty, null);
 
-            consumer = new EventingBasicConsumer(channel);
+            consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
 
             channel.BasicConsume(BusObjectNames.IncomingReplyQueueName, false, consumer);
@@ -55,7 +55,7 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             return Task.CompletedTask;
         }
 
-        private void Consumer_Received(object sender, BasicDeliverEventArgs args)
+        private Task Consumer_Received(object sender, BasicDeliverEventArgs args)
         {
             var responseJson = Encoding.UTF8.GetString(args.Body.Span);
             var response = JsonConvert.DeserializeObject<GenerateRandomNumberReply>(responseJson);
@@ -63,6 +63,8 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             logger.LogInformation("Received random number response: {Number}.", response.RandomNumber);
 
             channel.BasicAck(args.DeliveryTag, false);
+
+            return Task.CompletedTask;
         }
     }
 }
