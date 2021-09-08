@@ -31,14 +31,14 @@ namespace LearningRabbitMQ.RandomNumberConsumer
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            channel.ExchangeDeclare(BusObjectNames.IncomingReplyExchangeName, ExchangeType.Direct, true, false, null);
-            channel.QueueDeclare(BusObjectNames.IncomingReplyQueueName, true, false, false, null);
-            channel.QueueBind(BusObjectNames.IncomingReplyQueueName, BusObjectNames.IncomingReplyExchangeName, string.Empty, null);
+            channel.ExchangeDeclare(BusPrivateObjectNames.IncomingReplyExchange, ExchangeType.Direct, true, false, null);
+            channel.QueueDeclare(BusPrivateObjectNames.IncomingReplyQueue, true, false, false, null);
+            channel.QueueBind(BusPrivateObjectNames.IncomingReplyQueue, BusPrivateObjectNames.IncomingReplyExchange, string.Empty, null);
 
             consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
 
-            channel.BasicConsume(BusObjectNames.IncomingReplyQueueName, false, consumer);
+            channel.BasicConsume(BusPrivateObjectNames.IncomingReplyQueue, false, consumer);
 
             logger.LogInformation("Reply listener started.");
 

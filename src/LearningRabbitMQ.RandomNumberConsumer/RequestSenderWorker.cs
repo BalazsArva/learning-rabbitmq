@@ -28,8 +28,8 @@ namespace LearningRabbitMQ.RandomNumberConsumer
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            channel.ExchangeDeclare(BusObjectNames.OutgoingRequestExchangeName, ExchangeType.Direct, true, false);
-            channel.QueueBind(Addresses.RandomNumberServiceInboundQueueName, BusObjectNames.OutgoingRequestExchangeName, string.Empty, null);
+            channel.ExchangeDeclare(BusPrivateObjectNames.OutgoingRequestExchange, ExchangeType.Direct, true, false);
+            channel.QueueBind(BusSharedObjectNames.RandomNumberServiceInboundQueue, BusPrivateObjectNames.OutgoingRequestExchange, string.Empty, null);
 
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -44,9 +44,9 @@ namespace LearningRabbitMQ.RandomNumberConsumer
 
                 var props = channel.CreateBasicProperties();
 
-                props.ReplyTo = BusObjectNames.IncomingReplyExchangeName;
+                props.ReplyTo = BusPrivateObjectNames.IncomingReplyExchange;
 
-                channel.BasicPublish(BusObjectNames.OutgoingRequestExchangeName, string.Empty, props, requestJsonBytes);
+                channel.BasicPublish(BusPrivateObjectNames.OutgoingRequestExchange, string.Empty, props, requestJsonBytes);
 
                 logger.LogInformation("Sent request to message bus.");
 

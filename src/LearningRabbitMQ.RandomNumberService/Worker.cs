@@ -32,12 +32,12 @@ namespace LearningRabbitMQ.RandomNumberService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            channel.QueueDeclare(Addresses.RandomNumberServiceInboundQueueName, true, false, false, null);
+            channel.QueueDeclare(BusSharedObjectNames.RandomNumberServiceInboundQueue, true, false, false, null);
 
             consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
 
-            channel.BasicConsume(Addresses.RandomNumberServiceInboundQueueName, false, consumer);
+            channel.BasicConsume(BusSharedObjectNames.RandomNumberServiceInboundQueue, false, consumer);
 
             logger.LogInformation("Listener started.");
 
