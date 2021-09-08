@@ -63,8 +63,6 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             var response = JsonConvert.DeserializeObject<GenerateRandomNumberReply>(responseJson);
 
             logger.LogInformation("Received random number response: {Number}.", response.RandomNumber);
-
-            return;
         }
     }
 }

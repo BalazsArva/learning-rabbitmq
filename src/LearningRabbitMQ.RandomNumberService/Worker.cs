@@ -72,24 +72,18 @@ namespace LearningRabbitMQ.RandomNumberService
                 return;
             }
 
-            var replyTo = props.ReplyTo;
             var request = JsonConvert.DeserializeObject<GenerateRandomNumberRequest>(Encoding.UTF8.GetString(args.Body.Span));
-
-            var val = random.Next(request.Min, request.Max);
-
             var response = new GenerateRandomNumberReply
             {
-                RandomNumber = val,
+                RandomNumber = random.Next(request.Min, request.Max),
             };
 
             var responseJson = JsonConvert.SerializeObject(response);
             var responseJsonBytes = Encoding.UTF8.GetBytes(responseJson);
 
-            channel.BasicPublish(replyTo, string.Empty, channel.CreateBasicProperties(), responseJsonBytes);
+            channel.BasicPublish(props.ReplyTo, string.Empty, channel.CreateBasicProperties(), responseJsonBytes);
 
-            logger.LogInformation("Successfully responded to request with result {Number}.", val);
-
-            return;
+            logger.LogInformation("Successfully responded to request with result {Number}.", response.RandomNumber);
         }
     }
 }
