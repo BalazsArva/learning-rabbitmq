@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,7 +33,14 @@ namespace LearningRabbitMQ.RandomNumberService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            channel.QueueDeclare(BusSharedObjectNames.RandomNumberServiceInboundQueue, true, false, false, null);
+            channel.ExchangeDeclare(BusPrivateObjectNames.DeadletterExchange, ExchangeType.Direct, true, false, null);
+            channel.QueueDeclare(BusPrivateObjectNames.DeadletterQueue, true, false, false, null);
+            channel.QueueBind(BusPrivateObjectNames.DeadletterQueue, BusPrivateObjectNames.DeadletterExchange, string.Empty, null);
+
+            channel.QueueDeclare(BusSharedObjectNames.RandomNumberServiceInboundQueue, true, false, false, new Dictionary<string, object>()
+            {
+                [Headers.XDeadLetterExchange] = BusPrivateObjectNames.DeadletterExchange,
+            });
 
             consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
@@ -76,6 +84,15 @@ namespace LearningRabbitMQ.RandomNumberService
                 RandomNumber = random.Next(request.Min, request.Max),
             };
 
+            if (response.RandomNumber % 3 == 0)
+            {
+                channel.BasicNack(args.DeliveryTag, false, false);
+
+                logger.LogWarning("Not acknowledging message with message ID {MessageId}.", args.BasicProperties.MessageId);
+
+                return Task.CompletedTask;
+            }
+
             var responseJson = JsonConvert.SerializeObject(response);
             var responseJsonBytes = Encoding.UTF8.GetBytes(responseJson);
 
@@ -86,5 +103,11 @@ namespace LearningRabbitMQ.RandomNumberService
 
             return Task.CompletedTask;
         }
+    }
+
+    public static class BusPrivateObjectNames
+    {
+        public const string DeadletterExchange = "learning-rabbitmq.random-number-service.deadletter.x";
+        public const string DeadletterQueue = "learning-rabbitmq.random-number-service.deadletter.q";
     }
 }
