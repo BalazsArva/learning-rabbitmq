@@ -1,6 +1,7 @@
-using System;
+using LearningRabbitMQ.RandomNumberService.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 
 namespace LearningRabbitMQ.RandomNumberService
@@ -16,12 +17,23 @@ namespace LearningRabbitMQ.RandomNumberService
             Host.CreateDefaultBuilder(args)
                 .ConfigureServices((hostContext, services) =>
                 {
+                    services.Configure<RabbitMqOptions>(hostContext.Configuration.GetSection(RabbitMqOptions.SectionName));
+
                     services.AddHostedService<Worker>();
 
-                    services.AddSingleton(new ConnectionFactory
+                    services.AddSingleton(srvProvider =>
                     {
-                        Uri = new Uri("amqp://guest:guest@localhost:5672", UriKind.Absolute),
-                        DispatchConsumersAsync = true,
+                        var rabbitMqOpts = srvProvider.GetRequiredService<IOptions<RabbitMqOptions>>().Value;
+
+                        return new ConnectionFactory
+                        {
+                            HostName = rabbitMqOpts.Host,
+                            Port = rabbitMqOpts.Port,
+                            VirtualHost = rabbitMqOpts.VirtualHost,
+                            UserName = rabbitMqOpts.Username,
+                            Password = rabbitMqOpts.Password,
+                            DispatchConsumersAsync = true,
+                        };
                     });
 
                     services.AddTransient(srv => srv.GetRequiredService<ConnectionFactory>().CreateConnection());
