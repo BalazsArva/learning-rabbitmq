@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
+using RabbitMQ.Client.Exceptions;
 
 namespace LearningRabbitMQ.RandomNumberService
 {
@@ -69,12 +70,24 @@ namespace LearningRabbitMQ.RandomNumberService
             if (props is null)
             {
                 logger.LogWarning("Received a message with empty basic properties, reply to is missing.");
+                channel.BasicNack(args.DeliveryTag, false, false);
+
                 return Task.CompletedTask;
             }
 
             if (!props.IsReplyToPresent() || string.IsNullOrWhiteSpace(props.ReplyTo))
             {
                 logger.LogWarning("Received a message with empty reply to header value.");
+                channel.BasicNack(args.DeliveryTag, false, false);
+
+                return Task.CompletedTask;
+            }
+
+            if (!ExchangeExists(props.ReplyTo))
+            {
+                logger.LogWarning("Received a message with an invalid reply to exchange. The exchange '{ExchangeName}' does not exist.", props.ReplyTo);
+                channel.BasicNack(args.DeliveryTag, false, false);
+
                 return Task.CompletedTask;
             }
 
@@ -83,15 +96,6 @@ namespace LearningRabbitMQ.RandomNumberService
             {
                 RandomNumber = random.Next(request.Min, request.Max),
             };
-
-            if (response.RandomNumber % 3 == 0)
-            {
-                channel.BasicNack(args.DeliveryTag, false, false);
-
-                logger.LogWarning("Not acknowledging message with message ID {MessageId}.", args.BasicProperties.MessageId);
-
-                return Task.CompletedTask;
-            }
 
             var responseJson = JsonConvert.SerializeObject(response);
             var responseJsonBytes = Encoding.UTF8.GetBytes(responseJson);
@@ -102,6 +106,28 @@ namespace LearningRabbitMQ.RandomNumberService
             logger.LogInformation("Successfully responded to request with delivery tag {DeliveryTag} with result {Number}.", args.DeliveryTag, response.RandomNumber);
 
             return Task.CompletedTask;
+        }
+
+        private bool ExchangeExists(string exchangeName)
+        {
+            // When the exchange does not exist, it causes a protocol error and that shuts down the channel. For this reason, we are not using the main channel,
+            // but only a temporary one, so that we do not create race conditions (consuming happens on multiple threads).
+            using var checkChannel = connection.CreateModel();
+
+            try
+            {
+                checkChannel.ExchangeDeclarePassive(exchangeName);
+
+                return true;
+            }
+            catch (OperationInterruptedException e) when (e.ShutdownReason.ReplyCode == Constants.NotFound)
+            {
+                return false;
+            }
+            finally
+            {
+                checkChannel.Close();
+            }
         }
     }
 
