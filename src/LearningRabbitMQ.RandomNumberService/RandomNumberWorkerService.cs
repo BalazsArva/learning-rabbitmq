@@ -13,7 +13,7 @@ using RabbitMQ.Client.Exceptions;
 
 namespace LearningRabbitMQ.RandomNumberService
 {
-    public class Worker : IHostedService
+    public class RandomNumberWorkerService : IHostedService
     {
         private readonly IConnection connection;
         private readonly ILogger logger;
@@ -22,9 +22,9 @@ namespace LearningRabbitMQ.RandomNumberService
 
         private AsyncEventingBasicConsumer consumer;
 
-        public Worker(
+        public RandomNumberWorkerService(
             IConnection connection,
-            ILogger<Worker> logger)
+            ILogger<RandomNumberWorkerService> logger)
         {
             this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
             this.connection = connection ?? throw new ArgumentNullException(nameof(connection));

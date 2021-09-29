@@ -19,7 +19,7 @@ namespace LearningRabbitMQ.RandomNumberService
                 {
                     services.Configure<RabbitMqOptions>(hostContext.Configuration.GetSection(RabbitMqOptions.SectionName));
 
-                    services.AddHostedService<Worker>();
+                    services.AddHostedService<RandomNumberWorkerService>();
 
                     services.AddSingleton(srvProvider =>
                     {
