@@ -34,6 +34,7 @@ namespace LearningRabbitMQ.RandomNumberConsumer
                             UserName = rabbitMqOpts.Username,
                             Password = rabbitMqOpts.Password,
                             DispatchConsumersAsync = true,
+                            ConsumerDispatchConcurrency = 1,
                         };
                     });
 

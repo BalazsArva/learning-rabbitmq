@@ -35,6 +35,11 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             channel.QueueDeclare(BusPrivateObjectNames.IncomingReplyQueue, true, false, false, null);
             channel.QueueBind(BusPrivateObjectNames.IncomingReplyQueue, BusPrivateObjectNames.IncomingReplyExchange, string.Empty, null);
 
+            channel.CallbackException += (sender, args) =>
+            {
+                logger.LogError(args.Exception, "An unhandled error occurred while processing the message.");
+            };
+
             consumer = new AsyncEventingBasicConsumer(channel);
             consumer.Received += Consumer_Received;
 
