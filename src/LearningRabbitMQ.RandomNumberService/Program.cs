@@ -33,7 +33,7 @@ namespace LearningRabbitMQ.RandomNumberService
                             UserName = rabbitMqOpts.Username,
                             Password = rabbitMqOpts.Password,
                             DispatchConsumersAsync = true,
-                            ConsumerDispatchConcurrency = 2,
+                            ConsumerDispatchConcurrency = 1,
                         };
                     });
 
