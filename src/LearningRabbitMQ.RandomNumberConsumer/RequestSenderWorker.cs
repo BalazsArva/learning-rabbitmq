@@ -31,12 +31,15 @@ namespace LearningRabbitMQ.RandomNumberConsumer
             channel.ExchangeDeclare(BusPrivateObjectNames.OutgoingRequestExchange, ExchangeType.Direct, true, false);
             channel.QueueBind(BusSharedObjectNames.RandomNumberServiceInboundQueue, BusPrivateObjectNames.OutgoingRequestExchange, string.Empty, null);
 
+            var i = 0;
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 var request = new GenerateRandomNumberRequest
                 {
                     Min = 0,
                     Max = 1_000_000,
+                    MessageSequenceNumber = ++i,
                 };
 
                 var requestJson = JsonConvert.SerializeObject(request);
@@ -50,7 +53,7 @@ namespace LearningRabbitMQ.RandomNumberConsumer
 
                 logger.LogInformation("Sent request to message bus.");
 
-                await Task.Delay(500, stoppingToken);
+                await Task.Delay(50, stoppingToken);
             }
 
             channel.Close();

@@ -34,6 +34,8 @@ namespace LearningRabbitMQ.RandomNumberService
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
+            channel.BasicQos(0, 5, false);
+
             channel.ExchangeDeclare(BusPrivateObjectNames.DeadletterExchange, ExchangeType.Direct, true, false, null);
             channel.QueueDeclare(BusPrivateObjectNames.DeadletterQueue, true, false, false, null);
             channel.QueueBind(BusPrivateObjectNames.DeadletterQueue, BusPrivateObjectNames.DeadletterExchange, string.Empty, null);
@@ -63,8 +65,10 @@ namespace LearningRabbitMQ.RandomNumberService
             return Task.CompletedTask;
         }
 
-        private Task Consumer_Received(object sender, BasicDeliverEventArgs args)
+        private async Task Consumer_Received(object sender, BasicDeliverEventArgs args)
         {
+            await Task.Delay(TimeSpan.FromMilliseconds(500));
+
             var props = args.BasicProperties;
 
             if (props is null)
@@ -72,7 +76,7 @@ namespace LearningRabbitMQ.RandomNumberService
                 logger.LogWarning("Received a message with empty basic properties, reply to is missing.");
                 channel.BasicNack(args.DeliveryTag, false, false);
 
-                return Task.CompletedTask;
+                return;
             }
 
             if (!props.IsReplyToPresent() || string.IsNullOrWhiteSpace(props.ReplyTo))
@@ -80,7 +84,7 @@ namespace LearningRabbitMQ.RandomNumberService
                 logger.LogWarning("Received a message with empty reply to header value.");
                 channel.BasicNack(args.DeliveryTag, false, false);
 
-                return Task.CompletedTask;
+                return;
             }
 
             if (!ExchangeExists(props.ReplyTo))
@@ -88,7 +92,7 @@ namespace LearningRabbitMQ.RandomNumberService
                 logger.LogWarning("Received a message with an invalid reply to exchange. The exchange '{ExchangeName}' does not exist.", props.ReplyTo);
                 channel.BasicNack(args.DeliveryTag, false, false);
 
-                return Task.CompletedTask;
+                return;
             }
 
             var request = JsonConvert.DeserializeObject<GenerateRandomNumberRequest>(Encoding.UTF8.GetString(args.Body.Span));
@@ -97,6 +101,8 @@ namespace LearningRabbitMQ.RandomNumberService
                 RandomNumber = random.Next(request.Min, request.Max),
             };
 
+            logger.LogInformation("Message number {SequenceNumber}", request.MessageSequenceNumber);
+
             var responseJson = JsonConvert.SerializeObject(response);
             var responseJsonBytes = Encoding.UTF8.GetBytes(responseJson);
 
@@ -104,8 +110,6 @@ namespace LearningRabbitMQ.RandomNumberService
             channel.BasicAck(args.DeliveryTag, false);
 
             logger.LogInformation("Successfully responded to request with delivery tag {DeliveryTag} with result {Number}.", args.DeliveryTag, response.RandomNumber);
-
-            return Task.CompletedTask;
         }
 
         private bool ExchangeExists(string exchangeName)
